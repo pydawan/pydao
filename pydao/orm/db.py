@@ -55,8 +55,8 @@ class Connection(object):
             if driver_name:
                 # Importing module dinamically
                 self.__driver = __import__(driver_name)
-        except Exception, e:
-            print e.message
+        except Exception as e:
+            print(e.message)
         self.__reference = None
         self.__cursor = None
 
@@ -511,4 +511,4 @@ class DriverManager(object):
 
 if __name__ == '__main__':
     conn = DriverManager.connection(dbms='mysql', host='localhost', user='pydao', password='pydao', database='pydao')
-    print conn
+    print(conn)
