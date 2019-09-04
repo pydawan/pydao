@@ -138,7 +138,7 @@ class GenericDAO(object):
                      understand what the gd variable is.
         '''
         if self.model:
-            uppers = filter(str.isupper, self.__model.__class__.__name__)
+            uppers = list(filter(str.isupper, self.__model.__class__.__name__))
             if len(uppers) == 1:
                 self.__model_name = '%ss' % self.__model.__class__.__name__.lower()
             elif len(uppers) > 1:

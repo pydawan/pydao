@@ -8,6 +8,7 @@ Created on 28/03/2014
 '''
 
 class Produto(object):
+    
     def __init__(self):
         self.__id = None
         self.__nome = None

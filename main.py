@@ -12,10 +12,6 @@ __date__ = '23/11/2012'
 
 if __name__ == '__main__':
 
-    import sys
-
-    sys.path.append('../../')
-
     from pydao.orm import dao
     from pydao.orm.db import DriverManager as dm
     from pydao.orm.models import Produto
