@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 '''
 Created on 28/03/2014
@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     sys.path.append('../../')
 
-    import pydao.orm.dao
+    from pydao.orm import dao
     from pydao.orm.db import DriverManager as dm
     from pydao.orm.models import Produto
 
@@ -26,7 +26,8 @@ if __name__ == '__main__':
     produto.nome = 'CD George Michael'
     produto.preco = 21.00
     print('%s' % produto)
-    conn = dm.connection(dbms='mysql', user='pydao', password='pydao', database='pydao', auto_commit=True)
+    conn = dm.connection(dbms='mysql', user='pydao',
+                         password='pydao', database='pydao', auto_commit=True)
     print(conn)
     # Creating a instance of the GenericDAO class.
     dao = dao.GenericDAO(model=Produto, connection=conn)

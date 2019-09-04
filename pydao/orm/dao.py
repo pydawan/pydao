@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 '''
 Created on 28/03/2014
@@ -10,6 +10,7 @@ Created on 28/03/2014
 __author__ = 'Thiago Alexandre Martins Monteiro'
 __date__ = '24/11/2012'
 
+
 class GenericDAO(object):
     '''
     Class:       GenericDAO
@@ -17,6 +18,7 @@ class GenericDAO(object):
     Description: Provide access to data through the DAO (DATA ACCESS OBJECT) design pattern
                  isolating the persistence layer from the business layer of the application.
     '''
+
     def __init__(self, connection=None, model=None, dic={}, **entries):
         '''
         Method:      __init__
@@ -169,11 +171,12 @@ class GenericDAO(object):
         if self.__model_name:
             try:
                 # Import the model.
-                module = __import__('%s.%s' % ('models', self.__model_name), globals(), locals(), [], -1)
+                module = __import__('%s.%s' % (
+                    'models', self.__model_name), globals(), locals(), [], -1)
                 # Create a instance of the model class.
                 self.__model = module()
-            except Exception, e:
-                print e.message
+            except Exception as e:
+                print(e.message)
 
     def select(self, fields=[], where=''):
         '''
@@ -189,7 +192,7 @@ class GenericDAO(object):
                         understand what the gd variable is.
         '''
         if self.connection.reference and self.model:
-            cursor  = self.connection.cursor
+            cursor = self.connection.cursor
             sql = 'SELECT %s FROM '
             if fields and (type(fields) == type([])):
                 attrs = ''
@@ -207,13 +210,13 @@ class GenericDAO(object):
             # Ex: product (Product model class) entity => products table.
             sql = '%s %s' % (sql, self.model_name)
 
-            if where and (type(where) == type('') ):
+            if where and (type(where) == type('')):
                 sql = '%s WHERE %s' % (sql, where)
-            #print sql
+            # print sql
             try:
                 cursor.execute(sql)
-            except Exception, e:
-                print e.message
+            except Exception as e:
+                print(e.message)
             return cursor.fetchall()
         else:
             return None
@@ -269,15 +272,15 @@ class GenericDAO(object):
                         values += "'%s', " % v
                     values = values[:-2]
                     sql = '%s (%s) VALUES (%s)' % (sql, fields, values)
-            #print sql
+            # print sql
             try:
                 cursor.execute(sql)
                 if obj:
                     obj.id = self.last_id()
                 if settings:
                     settings['id'] = self.last_id()
-            except Exception, e:
-                print e.message
+            except Exception as e:
+                print(e.message)
 
     def update(self, obj=None, settings={}, where={}):
         '''
@@ -302,13 +305,14 @@ class GenericDAO(object):
                 settings = ''
                 for attr, val in obj.__dict__.items():
                     attr = attr.replace('_%s__' % obj.__class__.__name__, '')
-                    if attr <> 'id' and val:
+                    if attr != 'id' and val:
                         settings += "%s = '%s', " % (attr, val)
                 # Remove the blank space and comma of the settings end.
                 settings = settings[:-2]
                 sql = "%s %s WHERE id = '%s'" % (sql, settings, obj.id)
             # Receive two dictionaries (
-            else: # Receber dois dicionarios (one with the settings and the other with conditions).
+            # Receber dois dicionarios (one with the settings and the other with conditions).
+            else:
                 dic = settings
                 if self.check_dict(dic):
                     settings = ''
@@ -328,11 +332,11 @@ class GenericDAO(object):
                         where += "%s = '%s' AND " % (k, v)
                     where = where[:-4]
                     sql = '%s WHERE %s' % (sql, where)
-            #print sql
+            # print sql
             try:
                 cursor.execute(sql)
-            except Exception, e:
-                print e.message
+            except Exception as e:
+                print(e.message)
 
     def delete(self, obj=None, where={}):
         '''
@@ -358,11 +362,11 @@ class GenericDAO(object):
                         conditions += "%s = '%s' AND " % (f, v)
                     conditions = conditions[:-4]
                     sql = '%s %s' % (sql, conditions)
-            #print sql
+            # print sql
             try:
                 cursor.execute(sql)
-            except Exception, e:
-                print e.message
+            except Exception as e:
+                print(e.message)
 
     def last_id(self):
         '''
@@ -377,18 +381,18 @@ class GenericDAO(object):
         id = None
         if self.connection.reference and self.model:
             sql = ''
-            if  self.connection.dbms.lower() == 'mysql' or \
-                self.connection.dbms.lower() == 'postgresql' or \
-                self.connection.dbms.lower() == 'sqlite':
+            if self.connection.dbms.lower() == 'mysql' or \
+                    self.connection.dbms.lower() == 'postgresql' or \
+                    self.connection.dbms.lower() == 'sqlite':
                     # Id of the last inserted record.
-                    sql = 'SELECT id FROM %s ORDER BY id DESC LIMIT 1'
-                    sql = sql % self.__model_name
+                sql = 'SELECT id FROM %s ORDER BY id DESC LIMIT 1'
+                sql = sql % self.__model_name
             elif self.connection.dbms.lower() == 'oracle':
                 sql = 'SELECT MAX(id) FROM %s'
                 sql = sql % self.__model_name
             else:
                 pass
-            #print sql
+            # print sql
             try:
                 cursor = self.connection.cursor
                 cursor.execute(sql)
@@ -397,8 +401,8 @@ class GenericDAO(object):
                     id = cursor.fetchone()['id']
                 elif dbms in ['oracle', 'sqlite']:
                     id = cursor.fetchone()[0]
-            except Exception, e:
-                print e.message
+            except Exception as e:
+                print(e.message)
         return id
 
     def check_dict(self, dic):
@@ -419,7 +423,7 @@ class GenericDAO(object):
             if dic and (type(dic) == type({})):
                 for k in dic.keys():
                     # Show the key that not matchs with the model class attribute.
-                    #print k
+                    # print k
                     if not self.model.__dict__.has_key('_%s__%s' % (self.model.__class__.__name__, k)):
                         return False
             else:
@@ -465,10 +469,11 @@ if __name__ == '__main__':
     p.id = 1
     p.nome = 'Produto 1'
     p.preco = 300.0
-    from db import DriverManager
+    from pydao.orm.db import DriverManager
     dm = DriverManager()
-    conn = dm.connection(dbms='mysql', user='pydao', password='pydao', database='pydao')
+    conn = dm.connection(dbms='mysql', user='pydao',
+                         password='pydao', database='pydao')
     # Dar a opção de passar um dicionario no lugar do objeto.
     gd = GenericDAO(conn, Produto, auto_increment=True)
     for r in gd.select():
-        print r
+        print(r)
