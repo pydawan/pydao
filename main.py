@@ -22,12 +22,16 @@ if __name__ == '__main__':
     produto.nome = 'CD George Michael'
     produto.preco = 21.00
     print('%s' % produto)
+
     conn = dm.connection(dbms='mysql', user='pydao',
                          password='pydao', database='pydao', auto_commit=True)
     print(conn)
+
     # Creating a instance of the GenericDAO class.
     dao = dao.GenericDAO(model=Produto, connection=conn)
     dao.insert(produto)
+    
     for r in dao.select():
         print(r)
+    
     conn.close()
